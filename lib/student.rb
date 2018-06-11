@@ -19,6 +19,7 @@ class Student
         grade INTEGER
       )
       SQL
+      #This ending of heredoc has to be on its own line to work
     DB[:conn].execute(sql)
   end
 
@@ -28,9 +29,11 @@ class Student
   end
 
   def save
+    #forgot this first, gotta check if the object is already persisted in the database
     if self.id
       self.update
     else
+      #if not, that's when we get to makin' it.
       sql="INSERT INTO students(name, grade) VALUES (?,?)"
       DB[:conn].execute(sql,self.name,self.grade)
       @id=DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
@@ -50,7 +53,7 @@ class Student
   def self.find_by_name(name)
     sql="SELECT * FROM students WHERE name=?"
     row=DB[:conn].execute(sql,name).flatten
-    stu=Student.new_from_db(row)
+    stu=Student.new_from_db(row) #forgot to use the ready-made new from db method the first time
     stu
   end
 
@@ -58,9 +61,5 @@ class Student
     sql="UPDATE students SET name=?, grade=? WHERE id=?"
     DB[:conn].execute(sql,self.name,self.grade,self.id)
   end
-
-
-
-
 
 end
